@@ -278,40 +278,46 @@ select:focus {
     outline: none;
 }
 
+/* Estados de Erro e Sucesso */
+input.error,
+textarea.error,
+select.error {
+    border-color: red;
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+input.success,
+textarea.success,
+select.success {
+    border-color: green;
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
 /* Footer */
 footer {
     background-color: var(--color-primary);
     color: var(--color-text-light);
     text-align: center;
-    padding: 1rem 0;
-    margin-top: 2rem;
+    padding: 0.5rem 0; /* Altura reduzida */
+    margin-top: 1rem; /* Espaçamento reduzido acima do footer */
 }
 
 footer p {
-    margin: 0;
+    margin: 0.5rem 0; /* Reduz o espaçamento interno do texto */
+    font-size: 0.9rem; /* Tamanho de fonte menor para economizar espaço */
+}
+
+footer .container {
+    padding: 0 1rem; /* Reduz o padding horizontal do container */
+}
+
+footer .d-flex {
+    gap: 1rem; /* Espaçamento reduzido entre os itens */
 }
 
 footer a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
-    color: var(--color-text-light);
-    padding: 0.5rem 1rem;
-    border-radius: var(--border-radius);
-    transition: all 0.3s ease-in-out;
-}
-
-footer a:hover,
-footer a:focus {
-    background-color: rgba(255, 255, 255, 0.1); /* Fundo translúcido ao passar o mouse */
-    color: var(--color-accent);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-footer a:active {
-    transform: scale(0.98); /* Efeito de clique */
+    font-size: 0.9rem; /* Tamanho de fonte menor para os links */
+    padding: 0.3rem 0.6rem; /* Reduz o padding dos botões/links */
 }
 
 /* Modo Escuro */
@@ -376,5 +382,63 @@ body.dark-mode ::-webkit-scrollbar-track {
 
     .card {
         padding: 1rem;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        --color-background-light: var(--color-background-dark);
+        --color-text-dark: var(--color-text-light);
+    }
+}
+
+/* Animações */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Estilo para a imagem da HeroSection */
+.hero-image {
+    width: 100%; /* Ocupa 100% da largura do container */
+    max-width: 400px; /* Largura máxima para evitar que fique muito grande */
+    height: auto; /* Mantém a proporção */
+    object-fit: cover; /* Garante que a imagem cubra o espaço sem distorções */
+    border-radius: 10px; /* Formato retangular */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    animation: fadeIn 1s ease-in-out; /* Animação de entrada */
+}
+
+/* Estilo para a imagem da AboutSection */
+.about-image {
+    width: 100%; /* Ocupa 100% da largura do container */
+    max-width: 300px; /* Largura máxima para evitar que fique muito grande */
+    height: auto; /* Mantém a proporção */
+    object-fit: cover; /* Garante que a imagem cubra o espaço sem distorções */
+    border-radius: 50% / 60%; /* Formato oval */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    animation: fadeInUp 1s ease-in-out; /* Animação de entrada */
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .hero-image,
+    .about-image {
+        max-width: 200px; /* Reduz o tamanho máximo em telas menores */
     }
 }

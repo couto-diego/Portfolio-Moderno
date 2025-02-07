@@ -3,7 +3,7 @@ import { FaReact, FaPython, FaGitAlt, FaFigma, FaHtml5, FaCss3Alt, FaGithub, FaD
 import { SiMysql, SiJavascript, SiBootstrap, SiDjango } from 'react-icons/si';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-// Dados das Habilidades (pode ser movido para um arquivo separado)
+// Dados das Habilidades (movido para um arquivo separado)
 const skillsData = [
     { icon: FaReact, label: "React", tooltipText: "Biblioteca JavaScript para interfaces de usuário" },
     { icon: FaPython, label: "Python", tooltipText: "Linguagem de programação para desenvolvimento web e automação" },
@@ -21,7 +21,10 @@ const skillsData = [
 
 // Componente de Ícone com Tooltip
 const SkillIcon = ({ icon: Icon, label, tooltipText }) => (
-    <OverlayTrigger placement="top" overlay={<Tooltip id={`${label}-tooltip`}>{tooltipText}</Tooltip>}>
+    <OverlayTrigger
+        placement="top"
+        overlay={<Tooltip id={`${label}-tooltip`} className="custom-tooltip">{tooltipText}</Tooltip>}
+    >
         <div className="d-flex flex-column align-items-center gap-2 skill-icon-container">
             <Icon 
                 className="fs-1 skill-icon hover-scale" 
@@ -57,15 +60,13 @@ const AboutSection = () => {
                             <li>✅ Integração de APIs RESTful com autenticação JWT.</li>
                             <li>✅ Criação de interfaces responsivas e acessíveis com React e Bootstrap.</li>
                         </ul>
-                        
                     </div>
                     {/* Foto */}
                     <div className="col-md-6 order-md-1 d-flex justify-content-center align-items-center mb-4 mb-md-0">
                         <img
                             src="/assets/Diego1.png"
-                            alt="Diego Couto, Desenvolvedor Full Stack, codificando em seu ambiente de trabalho"
-                            className="img-fluid rounded-circle shadow border border-3 border-primary hover-scale mb-4" // Adiciona margem inferior
-                            style={{ width: '250px', height: '250px', objectFit: 'cover', objectPosition: '50% 20%' }}
+                            alt="Diego Couto, Desenvolvedor Full Stack"
+                            className="img-fluid shadow border border-3 border-primary hover-scale about-image" // Nova classe adicionada
                             onError={(e) => {
                                 e.target.src = '/assets/placeholder.png'; // Imagem padrão caso ocorra erro
                             }}

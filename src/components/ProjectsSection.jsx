@@ -1,64 +1,7 @@
 import React, { useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaGithub, FaExternalLinkAlt } from 'react-icons/fa'; // Ícones modernos
-
-// Dados dos Projetos (pode ser movido para um arquivo separado)
-const projectsData = [
-    {
-        id: 1,
-        title: "GitHub Repo Finder",
-        description: "O GitHub Repo Finder é uma aplicação web que permite buscar usuários do GitHub e visualizar seus repositórios.",
-        image: "/assets/Repo_Git.png",
-        github: "https://github.com/couto-diego/projeto-gitHub",
-        demo: "https://projeto-github-three.vercel.app",
-        tags: ['react', 'frontend'],
-    },
-    {
-        id: 2,
-        title: "Projeto Loteca",
-        description: "Resultados das Loterias, uma aplicação web moderna e responsiva que exibe resultados aleatórios das principais loterias brasileiras.",
-        image: "/assets/Loteca.png",
-        github: "https://github.com/couto-diego/projeto-loteca",
-        demo: "https://couto-diego.github.io/projeto-loteca/",
-        tags: ['react', 'typescript', 'frontend'],
-    },
-    {
-        id: 3,
-        title: "Primeiro Portfolio",
-        description: "Primeiro Portfolio criado por conta do desafio do bootcamp da Dio.",
-        image: "/assets/Portfolio.png",
-        github: "https://github.com/couto-diego/portfolio-diego-couto",
-        demo: "https://couto-diego.github.io/portfolio-diego-couto/",
-        tags: ['html', 'css', 'javascript'],
-    },
-    {
-        id: 4,
-        title: "Gerenciador de Assinaturas",
-        description: "Uma aplicação Python para gerenciar suas assinaturas de forma organizada.",
-        image: "/assets/Gerenciador.png",
-        github: "https://github.com/couto-diego/gerenciado-assinatura",
-        demo: "",
-        tags: ['python', 'backend'],
-    },
-    {
-        id: 5,
-        title: "Agenda Virtual",
-        description: "Uma aplicação simples e eficaz para gerenciar seus contatos.",
-        image: "/assets/Agenda.png",
-        github: "https://github.com/couto-diego/Agenda",
-        demo: "https://couto-diego.github.io/Agenda/",
-        tags: ['javascript', 'frontend'],
-    },
-    {
-        id: 6,
-        title: "ToDo List",
-        description: "Uma lista de tarefas simples e funcional para organizar suas atividades diárias.",
-        image: "/assets/ToDo List.png",
-        github: "https://github.com/couto-diego/ToDo-List",
-        demo: "https://couto-diego.github.io/ToDo-List/",
-        tags: ['react', 'frontend'],
-    },
-];
+import { projectsData } from './projectsData'; // Importa os dados dos projetos
 
 // Componente para Links de Projetos com Tooltip
 const ProjectLink = ({ href, label, tooltipText, icon }) => (
@@ -101,7 +44,7 @@ const ProjectsSection = () => {
                         <button
                             key={tag}
                             onClick={() => setFilter(tag)}
-                            className={`btn btn-outline-primary ${filter === tag ? 'active' : ''}`}
+                            className={`btn ${filter === tag ? 'btn-primary' : 'btn-outline-primary'}`}
                             aria-label={`Filtrar projetos por ${tag}`}
                         >
                             {tag.charAt(0).toUpperCase() + tag.slice(1)} {/* Capitaliza a primeira letra */}
@@ -117,8 +60,7 @@ const ProjectsSection = () => {
                                 <img
                                     src={project.image}
                                     alt={project.title}
-                                    className="card-img-top"
-                                    style={{ height: '150px', objectFit: 'cover' }}
+                                    className="card-img-top project-image"
                                     onError={(e) => {
                                         e.target.src = '/assets/placeholder.png'; // Imagem padrão caso ocorra erro
                                     }}

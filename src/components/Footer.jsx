@@ -26,13 +26,44 @@ const socialLinks = [
   },
 ];
 
+// Dados dos Links Internos
+const internalLinks = [
+  {
+    href: "#hero-section",
+    icon: faHome,
+    label: "Início",
+    tooltipText: "Voltar para o início",
+  },
+  {
+    href: "#sobre",
+    icon: faUser,
+    label: "Sobre",
+    tooltipText: "Saiba mais sobre mim",
+  },
+  {
+    href: "#projetos",
+    icon: faCode,
+    label: "Projetos",
+    tooltipText: "Veja meus projetos",
+  },
+  {
+    href: "#contato",
+    icon: faEnvelope,
+    label: "Contato",
+    tooltipText: "Entre em contato",
+  },
+];
+
 // SocialLink Component
 const SocialLink = ({ href, icon, label, tooltipText, isInternal = false }) => (
   <OverlayTrigger placement="top" overlay={<Tooltip id={`${label}-tooltip`}>{tooltipText}</Tooltip>}>
     <a
       href={href}
       {...(isInternal
-        ? { onClick: (e) => { e.preventDefault(); document.getElementById(href.slice(1)).scrollIntoView({ behavior: 'smooth' }); } }
+        ? { onClick: (e) => { 
+            e.preventDefault(); 
+            document.getElementById(href.slice(1)).scrollIntoView({ behavior: 'smooth' }); 
+          }}
         : { target: "_blank", rel: "noopener noreferrer" })}
       className="text-primary text-decoration-none d-flex align-items-center gap-2 hover-shadow"
       aria-label={label}
@@ -45,47 +76,26 @@ const SocialLink = ({ href, icon, label, tooltipText, isInternal = false }) => (
 // Footer Component
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-
   return (
-    <footer className="bg-dark text-white py-5">
+    <footer className="bg-dark text-white py-3"> {/* Padding vertical reduzido */}
       <div className="container px-4 text-center">
         {/* Navegação Interna */}
-        <div className="d-flex flex-wrap justify-content-center gap-3 mb-3">
-          <SocialLink
-            href="#hero-section"
-            icon={faHome}
-            label="Início"
-            tooltipText="Voltar para o início"
-            isInternal
-          />
-          <SocialLink
-            href="#sobre"
-            icon={faUser}
-            label="Sobre"
-            tooltipText="Saiba mais sobre mim"
-            isInternal
-          />
-          <SocialLink
-            href="#projetos"
-            icon={faCode}
-            label="Projetos"
-            tooltipText="Veja meus projetos"
-            isInternal
-          />
-          <SocialLink
-            href="#contato"
-            icon={faEnvelope}
-            label="Contato"
-            tooltipText="Entre em contato"
-            isInternal
-          />
+        <div className="d-flex flex-wrap justify-content-center gap-2 mb-2"> {/* Espaçamento reduzido */}
+          {internalLinks.map((link, index) => (
+            <SocialLink
+              key={index}
+              href={link.href}
+              icon={link.icon}
+              label={link.label}
+              tooltipText={link.tooltipText}
+              isInternal
+            />
+          ))}
         </div>
-
         {/* Direitos Autorais */}
-        <p className="mb-3">© {currentYear} Diego Couto. Todos os direitos reservados.</p>
-
+        <p className="mb-2 small">© {currentYear} Diego Couto. Todos os direitos reservados.</p> {/* Fonte menor */}
         {/* Redes Sociais e Ícone de Download do Currículo */}
-        <div className="d-flex flex-wrap justify-content-center gap-3">
+        <div className="d-flex flex-wrap justify-content-center gap-2"> {/* Espaçamento reduzido */}
           {socialLinks.map((link, index) => (
             <SocialLink
               key={index}
@@ -99,8 +109,12 @@ const Footer = () => {
           <a
             href="/assets/DiegoCouto_CV.pdf"
             download="Diego_Couto_CV.pdf"
-            className="text-primary text-decoration-none d-flex align-items-center gap-2 hover-shadow"
+            className="text-primary text-decoration-none d-flex align-items-center gap-2 hover-shadow small"
             aria-label="Baixar currículo"
+            onError={(e) => {
+              console.error("Erro ao carregar o currículo.");
+              e.target.href = "/assets/placeholder.pdf"; // Fallback para um arquivo padrão
+            }}
           >
             <FontAwesomeIcon icon={faDownload} title="Baixar currículo" /> Currículo
           </a>

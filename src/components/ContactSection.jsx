@@ -33,9 +33,9 @@ const ContactSection = () => {
         setLoading(true);
 
         try {
-            const API_URL = process.env.REACT_APP_API_URL;
-
+            const API_URL = process.env.REACT_APP_API_URL || 'https://fallback-api-url.com/api'; // Fallback URL
             const response = await axios.post(`${API_URL}/contact`, formData);
+
             if (response.status === 200) {
                 setSuccess(true);
                 setError(null);
@@ -43,16 +43,15 @@ const ContactSection = () => {
             }
         } catch (err) {
             console.error('Erro ao enviar mensagem:', err);
+
             if (err.response) {
-                // Erro retornado pelo backend
                 setError(`Erro: ${err.response.data.error || 'Ocorreu um problema ao enviar a mensagem.'}`);
             } else if (err.request) {
-                // Nenhuma resposta recebida do backend
                 setError('Erro: Não foi possível conectar ao servidor. Verifique sua conexão.');
             } else {
-                // Outros erros
                 setError('Erro inesperado. Tente novamente mais tarde.');
             }
+
             setSuccess(false);
         } finally {
             setLoading(false);

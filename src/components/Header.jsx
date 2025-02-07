@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaMoon, FaSun, FaBars } from 'react-icons/fa'; // Ícones modernos
 
-// Componente para os links de navegação
-const NavLinks = ({ scrollToSection }) => (
+// Subcomponente para os links de navegação
+const NavLinks = ({ scrollToSection, isMobile = false, closeMenu }) => (
   <>
     <a
       href="#hero-section"
       onClick={(e) => {
         e.preventDefault();
         scrollToSection('hero-section');
+        if (isMobile) closeMenu();
       }}
       className="text-decoration-none text-white hover-effect"
       aria-label="Ir para a seção Início"
@@ -21,6 +22,7 @@ const NavLinks = ({ scrollToSection }) => (
       onClick={(e) => {
         e.preventDefault();
         scrollToSection('sobre');
+        if (isMobile) closeMenu();
       }}
       className="text-decoration-none text-white hover-effect"
       aria-label="Ir para a seção Sobre"
@@ -28,21 +30,23 @@ const NavLinks = ({ scrollToSection }) => (
       Sobre
     </a>
     <a
-    href="#projetos"
-    onClick={(e) => {
+      href="#projetos"
+      onClick={(e) => {
         e.preventDefault();
-        document.getElementById('projetos').scrollIntoView({ behavior: 'smooth' });
-    }}
-    className="text-decoration-none text-white hover-effect"
-    aria-label="Ir para a seção Projetos"
->
-    Projetos
-</a>
+        scrollToSection('projetos');
+        if (isMobile) closeMenu();
+      }}
+      className="text-decoration-none text-white hover-effect"
+      aria-label="Ir para a seção Projetos"
+    >
+      Projetos
+    </a>
     <a
       href="#contato"
       onClick={(e) => {
         e.preventDefault();
         scrollToSection('contato');
+        if (isMobile) closeMenu();
       }}
       className="text-decoration-none text-white hover-effect"
       aria-label="Ir para a seção Contato"
@@ -58,6 +62,7 @@ const Header = () => {
     localStorage.getItem('theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches
   );
 
+  // Aplica o tema salvo ao carregar o componente
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
@@ -65,6 +70,7 @@ const Header = () => {
     }
   }, []);
 
+  // Alterna entre modo claro e escuro
   const toggleTheme = () => {
     const newTheme = isDarkMode ? 'light' : 'dark';
     setIsDarkMode(!isDarkMode);
@@ -72,6 +78,7 @@ const Header = () => {
     document.body.classList.toggle('dark-mode', newTheme === 'dark');
   };
 
+  // Rola suavemente até a seção especificada
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
@@ -90,16 +97,15 @@ const Header = () => {
             src="/assets/Logo.png"
             alt="Logo DC Dev"
             className="logo-img"
-            style={{ height: '45', width: 'auto' }}
           />
         </div>
 
-        {/* Navigation Links (Visible only on large screens) */}
+        {/* Links de Navegação (Visíveis apenas em telas grandes) */}
         <div className="d-none d-lg-flex gap-3 align-items-center">
           <NavLinks scrollToSection={scrollToSection} />
         </div>
 
-        {/* Icons (Hamburger Menu and Dark Mode Toggle) */}
+        {/* Ícones (Menu Hambúrguer e Alternância de Tema) */}
         <div className="d-flex gap-3 align-items-center">
           {/* Botão de Menu Móvel */}
           <button
@@ -125,65 +131,14 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu (Visible when isMenuOpen is true) */}
+      {/* Menu Móvel (Visível quando isMenuOpen é true) */}
       <ul
         className={`bg-dark text-white list-unstyled d-flex flex-column align-items-center py-3 ${
           isMenuOpen ? 'd-block animate-fade-in' : 'd-none'
         }`}
         aria-hidden={!isMenuOpen}
       >
-        <li className="mb-2">
-          <a
-            href="#hero-section"
-            onClick={() => {
-              setIsMenuOpen(false);
-              scrollToSection('hero-section');
-            }}
-            className="text-decoration-none text-white hover-effect"
-            aria-label="Ir para a seção Início"
-          >
-            Home
-          </a>
-        </li>
-        <li className="mb-2">
-          <a
-            href="#sobre"
-            onClick={() => {
-              setIsMenuOpen(false);
-              scrollToSection('sobre');
-            }}
-            className="text-decoration-none text-white hover-effect"
-            aria-label="Ir para a seção Sobre"
-          >
-            Sobre
-          </a>
-        </li>
-        <li className="mb-2">
-          <a
-            href="#projetos"
-            onClick={() => {
-              setIsMenuOpen(false);
-              scrollToSection('projetos');
-            }}
-            className="text-decoration-none text-white hover-effect"
-            aria-label="Ir para a seção Projetos"
-          >
-            Projetos
-          </a>
-        </li>
-        <li className="mb-2">
-          <a
-            href="#contato"
-            onClick={() => {
-              setIsMenuOpen(false);
-              scrollToSection('contato');
-            }}
-            className="text-decoration-none text-white hover-effect"
-            aria-label="Ir para a seção Contato"
-          >
-            Contato
-          </a>
-        </li>
+        <NavLinks scrollToSection={scrollToSection} isMobile closeMenu={() => setIsMenuOpen(false)} />
       </ul>
     </header>
   );
