@@ -11,7 +11,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: '*',
+    origin: `${process.env.REACT_APP_API_URL}/api/contact`,
 
 }));
 app.use(express.json());
