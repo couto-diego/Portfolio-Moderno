@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // Certifique-se de que esta linha está presente
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faPaperPlane, faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -9,6 +9,8 @@ const ContactSection = () => {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const API_URL = process.env.REACT_APP_API_URL;
 
     // Validação de e-mail
     const validateEmail = (email) => {
@@ -29,18 +31,18 @@ const ContactSection = () => {
         }
         setLoading(true);
         try {
-            console.log('Enviando dados para o backend:', formData); // Adicione esta linha
-            const response = await axios.post('http://localhost:5000/api/contact', formData);
-            console.log('Resposta do backend:', response.data); // Adicione esta linha
+            console.log('Enviando dados para o backend:', formData);
+            const response = await axios.post(`${API_URL}/contact`, formData);
+            console.log('Resposta do backend:', response.data);
             if (response.status === 200) {
                 setSuccess(true);
                 setError(null);
                 setFormData({ name: '', email: '', message: '' });
             }
         } catch (err) {
-            console.error('Erro ao enviar mensagem:', err); // Adicione esta linha
-            if (err.response && err.response.status === 400) {
-                setError('Erro: Dados inválidos. Verifique o formulário.');
+            console.error('Erro ao enviar mensagem:', err);
+            if (err.response) {
+                setError(`Erro ${err.response.status}: ${err.response.data.error || 'Erro desconhecido.'}`);
             } else {
                 setError('Erro ao enviar mensagem. Tente novamente.');
             }
