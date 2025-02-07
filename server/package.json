@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Diego Couto",
+  "license": "MIT",
+  "description": "Backend para o portfólio pessoal com formulário de contato integrado ao MongoDB e Twilio.",
   "dependencies": {
     "axios": "^1.7.9",
     "cors": "^2.8.5",
