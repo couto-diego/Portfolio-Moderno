@@ -9,20 +9,28 @@ const Message = require('./models/Message');
 // Inicializa o aplicativo Express
 const app = express();
 
+// Validação de variáveis de ambiente
+if (!process.env.MONGO_URI || !process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
+    console.error('Faltando variáveis de ambiente essenciais. Certifique-se de definir MONGO_URI, TWILIO_ACCOUNT_SID e TWILIO_AUTH_TOKEN.');
+    process.exit(1);
+}
+
 // Middleware
 app.use(cors({
-    origin: `${process.env.REACT_APP_API_URL}/api/contact`,
-
+    origin: process.env.CORS_ORIGIN || '*',
+    credentials: true,
 }));
 app.use(express.json());
 
 // Conexão com MongoDB
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('Conectado ao MongoDB'))
-    .catch((err) => {
-        console.error('Erro ao conectar ao MongoDB:', err);
-        process.exit(1);
-    });
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(() => console.log('Conectado ao MongoDB'))
+  .catch((err) => {
+      console.error('Erro ao conectar ao MongoDB:', err);
+      process.exit(1);
+  });
 
 // Configuração do Twilio
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -53,26 +61,29 @@ app.post(
             console.log('Mensagem recebida:', { name, email, message });
 
             // Envia notificação via WhatsApp
-            const sendNotification = async () => {
-                try {
-                    await client.messages.create({
-                        body: `Nova mensagem de ${name} (${email}): ${message}`,
-                        from: process.env.TWILIO_WHATSAPP_NUMBER,
-                        to: process.env.YOUR_WHATSAPP_NUMBER,
-                    });
-                } catch (error) {
-                    console.error('Erro ao enviar notificação via WhatsApp:', error);
-                }
-            };
-            setTimeout(sendNotification, 0); // Executa assincronamente
+            client.messages.create({
+                body: `Nova mensagem de ${name} (${email}): ${message}`,
+                from: process.env.TWILIO_WHATSAPP_NUMBER,
+                to: process.env.YOUR_WHATSAPP_NUMBER,
+            }).catch((error) => {
+                console.error('Erro ao enviar notificação via WhatsApp:', error);
+            });
 
-            res.status(200).json({ message: 'Mensagem recebida com sucesso!', messageId: newMessage._id });
+            res.status(200).json({
+                message: 'Mensagem recebida com sucesso! Você receberá uma notificação.',
+                messageId: newMessage._id,
+            });
         } catch (error) {
             console.error('Erro ao processar mensagem:', error);
             res.status(500).json({ error: 'Erro interno ao salvar mensagem.' });
         }
     }
 );
+
+// Captura de exceções não tratadas
+process.on('unhandledRejection', (reason) => {
+    console.error('Unhandled Rejection:', reason);
+});
 
 // Inicia o servidor
 const PORT = process.env.PORT || 5000;
