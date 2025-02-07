@@ -1,0 +1,380 @@
+/* Importação da fonte Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Fallback para a fonte Poppins */
+body {
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
+/* Variáveis CSS */
+:root {
+    --color-primary: #63b3ed; /* Azul claro */
+    --color-secondary: #4a5568; /* Cinza escuro */
+    --color-text-light: #f9fafb; /* Branco */
+    --color-text-dark: #333; /* Preto */
+    --color-background-light: #f5f7fa; /* Fundo claro */
+    --color-background-dark: #1a202c; /* Fundo escuro */
+    --color-accent: #ff7e5f; /* Laranja vibrante */
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-background-light);
+    color: var(--color-text-dark);
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+/* Placeholder */
+input::placeholder,
+textarea::placeholder {
+    color: #ccc; /* Cor clara para melhor contraste */
+    opacity: 1; /* Garante que o placeholder seja visível */
+}
+
+/* Placeholder específico para fundo escuro */
+.form-control.bg-dark::placeholder {
+    color: #ccc; /* Cor clara para o placeholder */
+}
+
+/* Para navegadores antigos */
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+    color: #ccc;
+}
+
+input::-ms-input-placeholder,
+textarea::-ms-input-placeholder {
+    color: #ccc;
+}
+
+/* Links Globais */
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+
+a:hover,
+a:focus {
+    color: var(--color-accent); /* Cor vibrante ao passar o mouse */
+    text-decoration: underline;
+    transform: translateY(-2px); /* Efeito de elevação */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+a:active {
+    transform: scale(0.98); /* Efeito de clique (reduz ligeiramente) */
+}
+
+/* Layout Principal */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Header */
+header {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2); /* Borda inferior opcional */
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+header a {
+    font-weight: 600;
+    color: var(--color-text-light);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease-in-out;
+}
+
+header a:hover,
+header a:focus {
+    background-color: rgba(255, 255, 255, 0.1); /* Fundo translúcido ao passar o mouse */
+    color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.logo-img {
+    height: 45px;
+    width: auto; /* Largura automática para manter proporção */
+    object-fit: contain; /* Garante que a imagem não seja distorcida */
+}
+
+/* Seção Principal */
+section {
+    margin: 2rem 0;
+}
+
+/* Espaçamento para a HeroSection */
+#hero-section {
+    padding-top: 80px; /* Altura aproximada do Header */
+}
+
+/* Ajuste Responsivo para Telas Menores */
+@media (max-width: 992px) {
+    #hero-section {
+        padding-top: 120px; /* Altura maior para caber o menu móvel */
+    }
+}
+
+/* Cards */
+.card {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.card-text {
+    color: var(--color-text-dark);
+}
+
+/* Cores Específicas para Modo Claro e Escuro */
+body:not(.dark-mode) .card {
+    --card-background: #ffffff; /* Fundo claro para modo claro */
+}
+
+body.dark-mode .card {
+    --card-background: #2d3748; /* Fundo escuro para modo escuro */
+    color: var(--color-text-light);
+}
+
+body.dark-mode .card-text {
+    color: #ccc;
+}
+
+/* Botões */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: var(--border-radius);
+    transition: all 0.4s ease-in-out;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.btn-primary:hover::after {
+    opacity: 1;
+}
+
+.btn-primary:hover {
+    background-color: #3b4759;
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-secondary::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.btn-secondary:hover::after {
+    opacity: 1;
+}
+
+.btn-secondary:hover {
+    background-color: #242e3c;
+    transform: scale(1.05);
+}
+
+/* Formulários */
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: var(--color-background-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+input,
+textarea,
+select {
+    background-color: var(--color-background-light);
+    border: 1px solid var(--color-secondary);
+    color: var(--color-text-dark);
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 5px rgba(99, 179, 237, 0.5);
+    outline: none;
+}
+
+/* Footer */
+footer {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 2rem;
+}
+
+footer p {
+    margin: 0;
+}
+
+footer a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: var(--color-text-light);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease-in-out;
+}
+
+footer a:hover,
+footer a:focus {
+    background-color: rgba(255, 255, 255, 0.1); /* Fundo translúcido ao passar o mouse */
+    color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+footer a:active {
+    transform: scale(0.98); /* Efeito de clique */
+}
+
+/* Modo Escuro */
+body.dark-mode {
+    --color-background-light: var(--color-background-dark);
+    --color-text-dark: var(--color-text-light);
+    --color-primary: #63b3ed;
+    --color-secondary: #4a5568;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode .card {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+}
+
+body.dark-mode .card-text {
+    color: #ccc;
+}
+
+body.dark-mode .btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-text-light);
+}
+
+body.dark-mode .btn-secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-text-light);
+}
+
+/* Scrollbar Customizada */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-background-light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3b4759;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: var(--color-background-dark);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 0.5rem;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+}
