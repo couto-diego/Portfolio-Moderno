@@ -10,8 +10,6 @@ const ContactSection = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const API_URL = process.env.REACT_APP_API_URL;
-
     // Validação de e-mail
     const validateEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -21,19 +19,23 @@ const ContactSection = () => {
     // Manipulador de envio do formulário
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (!validateEmail(formData.email)) {
             setError('Por favor, insira um e-mail válido.');
             return;
         }
-        if (!formData.message.trim()) {
-            setError('Por favor, insira uma mensagem válida.');
+
+        if (!formData.message.trim() || formData.message.trim().length < 10) {
+            setError('Por favor, insira uma mensagem válida com pelo menos 10 caracteres.');
             return;
         }
+
         setLoading(true);
+
         try {
-            console.log('Enviando dados para o backend:', formData);
+            const API_URL = process.env.REACT_APP_API_URL;
+
             const response = await axios.post(`${API_URL}/contact`, formData);
-            console.log('Resposta do backend:', response.data);
             if (response.status === 200) {
                 setSuccess(true);
                 setError(null);
@@ -42,9 +44,14 @@ const ContactSection = () => {
         } catch (err) {
             console.error('Erro ao enviar mensagem:', err);
             if (err.response) {
-                setError(`Erro ${err.response.status}: ${err.response.data.error || 'Erro desconhecido.'}`);
+                // Erro retornado pelo backend
+                setError(`Erro: ${err.response.data.error || 'Ocorreu um problema ao enviar a mensagem.'}`);
+            } else if (err.request) {
+                // Nenhuma resposta recebida do backend
+                setError('Erro: Não foi possível conectar ao servidor. Verifique sua conexão.');
             } else {
-                setError('Erro ao enviar mensagem. Tente novamente.');
+                // Outros erros
+                setError('Erro inesperado. Tente novamente mais tarde.');
             }
             setSuccess(false);
         } finally {
@@ -85,6 +92,7 @@ const ContactSection = () => {
                     <small id="name-help" className="text-danger">
                         {error && !formData.name && "Por favor, insira seu nome."}
                     </small>
+
                     {/* Campo de E-mail */}
                     <input
                         type="email"
@@ -107,6 +115,7 @@ const ContactSection = () => {
                     <small id="email-help" className="text-danger">
                         {error && formData.email && !validateEmail(formData.email) && "Por favor, insira um e-mail válido."}
                     </small>
+
                     {/* Campo de Mensagem */}
                     <textarea
                         placeholder="Digite sua mensagem (máximo 500 caracteres)"
@@ -125,6 +134,7 @@ const ContactSection = () => {
                     >
                         {`${formData.message.length}/500 caracteres`}
                     </small>
+
                     {/* Botão de Envio */}
                     <button
                         type="submit"
@@ -142,6 +152,7 @@ const ContactSection = () => {
                         )}
                     </button>
                 </form>
+
                 {/* Mensagem de Sucesso */}
                 {success && (
                     <div
@@ -152,6 +163,7 @@ const ContactSection = () => {
                         Mensagem enviada com sucesso!
                     </div>
                 )}
+
                 {/* Mensagem de Erro */}
                 {error && (
                     <div
@@ -162,6 +174,7 @@ const ContactSection = () => {
                         {error}
                     </div>
                 )}
+
                 {/* Botões de Contato Direto */}
                 <div className="d-flex justify-content-center gap-4 mt-4 flex-wrap">
                     {/* E-mail */}
@@ -172,6 +185,7 @@ const ContactSection = () => {
                     >
                         <FontAwesomeIcon icon={faEnvelope} title="E-mail" /> E-mail
                     </a>
+
                     {/* WhatsApp */}
                     <a
                         href="https://wa.me/+5521974700582"
