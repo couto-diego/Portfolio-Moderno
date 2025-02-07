@@ -10,27 +10,41 @@ const Message = require('./models/Message');
 const app = express();
 
 // Validação de variáveis de ambiente
-if (!process.env.MONGO_URI || !process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
-    console.error('Faltando variáveis de ambiente essenciais. Certifique-se de definir MONGO_URI, TWILIO_ACCOUNT_SID e TWILIO_AUTH_TOKEN.');
+if (
+    !process.env.MONGO_URI ||
+    !process.env.TWILIO_ACCOUNT_SID ||
+    !process.env.TWILIO_AUTH_TOKEN ||
+    !process.env.TWILIO_WHATSAPP_NUMBER ||
+    !process.env.YOUR_WHATSAPP_NUMBER ||
+    !process.env.CORS_ORIGIN
+) {
+    console.error('Faltando variáveis de ambiente essenciais. Certifique-se de definir todas as variáveis necessárias.');
     process.exit(1);
 }
 
 // Middleware
+const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [];
+
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || '*',
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true); // Permite a origem
+        } else {
+            callback(new Error('Not allowed by CORS')); // Bloqueia a origem
+        }
+    },
     credentials: true,
 }));
+
 app.use(express.json());
 
 // Conexão com MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(() => console.log('Conectado ao MongoDB'))
-  .catch((err) => {
-      console.error('Erro ao conectar ao MongoDB:', err);
-      process.exit(1);
-  });
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('Conectado ao MongoDB'))
+    .catch((err) => {
+        console.error('Erro ao conectar ao MongoDB:', err);
+        process.exit(1);
+    });
 
 // Configuração do Twilio
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -59,15 +73,19 @@ app.post(
             // Salva a mensagem no banco de dados
             const newMessage = await Message.create({ name, email, message });
             console.log('Mensagem recebida:', { name, email, message });
+            console.log('Mensagem salva no banco de dados:', newMessage);
 
             // Envia notificação via WhatsApp
-            client.messages.create({
-                body: `Nova mensagem de ${name} (${email}): ${message}`,
-                from: process.env.TWILIO_WHATSAPP_NUMBER,
-                to: process.env.YOUR_WHATSAPP_NUMBER,
-            }).catch((error) => {
+            try {
+                await client.messages.create({
+                    body: `Nova mensagem de ${name} (${email}): ${message}`,
+                    from: process.env.TWILIO_WHATSAPP_NUMBER,
+                    to: process.env.YOUR_WHATSAPP_NUMBER,
+                });
+                console.log('Notificação via WhatsApp enviada com sucesso.');
+            } catch (error) {
                 console.error('Erro ao enviar notificação via WhatsApp:', error);
-            });
+            }
 
             res.status(200).json({
                 message: 'Mensagem recebida com sucesso! Você receberá uma notificação.',
