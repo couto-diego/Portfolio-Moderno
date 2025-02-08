@@ -5,200 +5,177 @@ import { faEnvelope, faPaperPlane, faSpinner } from '@fortawesome/free-solid-svg
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 
 const ContactSection = () => {
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-    // Validação de e-mail
-    const validateEmail = (email) => {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
-    };
+  // Validação de e-mail
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
 
-    // Manipulador de envio do formulário
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  // Manipulador de envio do formulário
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        if (!validateEmail(formData.email)) {
-            setError('Por favor, insira um e-mail válido.');
-            return;
-        }
+    if (!validateEmail(formData.email)) {
+      setError('Por favor, insira um e-mail válido.');
+      return;
+    }
 
-        if (!formData.message.trim() || formData.message.trim().length < 10) {
-            setError('Por favor, insira uma mensagem válida com pelo menos 10 caracteres.');
-            return;
-        }
+    if (!formData.message.trim() || formData.message.trim().length < 10) {
+      setError('Por favor, insira uma mensagem válida com pelo menos 10 caracteres.');
+      return;
+    }
 
-        setLoading(true);
+    setLoading(true);
+    try {
+      const API_URL = process.env.REACT_APP_API_URL;
+      const response = await axios.post(`${API_URL}/contact`, formData);
 
-        try {
-            const API_URL = process.env.REACT_APP_API_URL || 'https://fallback-api-url.com/api'; // Fallback URL
-            const response = await axios.post(`${API_URL}/contact`, formData);
+      if (response.status === 200) {
+        setSuccess(true);
+        setError(null);
+        setFormData({ name: '', email: '', message: '' });
+      }
+    } catch (err) {
+      console.error('Erro ao enviar mensagem:', err);
+      setError('Erro ao enviar a mensagem. Tente novamente mais tarde.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            if (response.status === 200) {
-                setSuccess(true);
-                setError(null);
-                setFormData({ name: '', email: '', message: '' });
-            }
-        } catch (err) {
-            console.error('Erro ao enviar mensagem:', err);
+  return (
+    <section className="contact-section">
+      <div className="container">
+        <h2>Entre em Contato</h2>
 
-            if (err.response) {
-                setError(`Erro: ${err.response.data.error || 'Ocorreu um problema ao enviar a mensagem.'}`);
-            } else if (err.request) {
-                setError('Erro: Não foi possível conectar ao servidor. Verifique sua conexão.');
-            } else {
-                setError('Erro inesperado. Tente novamente mais tarde.');
-            }
+        <form onSubmit={handleSubmit} className="contact-form">
+          {/* Campo de Nome */}
+          <input
+            type="text"
+            placeholder="Digite seu nome"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className={`form-control bg-dark text-white ${error && !formData.name ? 'is-invalid' : ''}`}
+            required
+            aria-label="Nome"
+            aria-describedby="name-help"
+          />
+          <small id="name-help" className="text-danger">
+            {error && !formData.name && "Por favor, insira seu nome."}
+          </small>
 
-            setSuccess(false);
-        } finally {
-            setLoading(false);
-        }
-    };
+          {/* Campo de E-mail */}
+          <input
+            type="email"
+            placeholder="Digite seu e-mail"
+            value={formData.email}
+            onChange={(e) => {
+              setFormData({ ...formData, email: e.target.value });
+              setError(null);
+            }}
+            onBlur={() => {
+              if (formData.email && !validateEmail(formData.email)) {
+                setError('Por favor, insira um e-mail válido.');
+              }
+            }}
+            className={`form-control bg-dark text-white ${error && formData.email && !validateEmail(formData.email) ? 'is-invalid' : ''}`}
+            required
+            aria-label="E-mail"
+            aria-describedby="email-help"
+          />
+          <small id="email-help" className="text-danger">
+            {error && formData.email && !validateEmail(formData.email) && "Por favor, insira um e-mail válido."}
+          </small>
 
-    // Limpar mensagens após 5 segundos
-    useEffect(() => {
-        if (success || error) {
-            const timer = setTimeout(() => {
-                setSuccess(false);
-                setError(null);
-            }, 5000); // Limpa após 5 segundos
-            return () => clearTimeout(timer);
-        }
-    }, [success, error]);
+          {/* Campo de Mensagem */}
+          <textarea
+            placeholder="Digite sua mensagem (máximo 500 caracteres)"
+            value={formData.message}
+            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+            className="form-control bg-dark text-white"
+            rows="5"
+            maxLength={500}
+            required
+            aria-label="Mensagem"
+            aria-describedby="message-help"
+          ></textarea>
+          <small
+            className={`text-muted ${formData.message.length > 450 ? 'text-warning fw-bold' : ''}`}
+            id="message-help"
+          >
+            {`${formData.message.length}/500 caracteres`}
+          </small>
 
-    return (
-        <section id="contato" className="py-5 bg-dark text-white">
-            <div className="container">
-                <h2 className="display-4 fw-bold text-center mb-4">Contato</h2>
-                <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4 p-4 bg-secondary bg-opacity-10 rounded shadow-sm">
-                    {/* Campo de Nome */}
-                    <input
-                        type="text"
-                        placeholder="Digite seu nome"
-                        value={formData.name}
-                        onChange={(e) => {
-                            setFormData({ ...formData, name: e.target.value });
-                            setError(null);
-                        }}
-                        className={`form-control bg-dark text-white ${error && !formData.name ? 'is-invalid' : ''}`}
-                        required
-                        aria-label="Nome"
-                        aria-describedby="name-help"
-                    />
-                    <small id="name-help" className="text-danger">
-                        {error && !formData.name && "Por favor, insira seu nome."}
-                    </small>
+          {/* Botão de Envio */}
+          <button
+            type="submit"
+            className="btn btn-primary w-100 d-flex align-items-center justify-content-center hover-shadow"
+            disabled={loading}
+            aria-label="Enviar mensagem"
+          >
+            {loading ? (
+              <FontAwesomeIcon icon={faSpinner} className="spinner-icon me-2" spin aria-hidden="true" />
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faPaperPlane} className="me-2" title="Enviar Mensagem" />
+                Enviar Mensagem
+              </>
+            )}
+          </button>
+        </form>
 
-                    {/* Campo de E-mail */}
-                    <input
-                        type="email"
-                        placeholder="Digite seu e-mail"
-                        value={formData.email}
-                        onChange={(e) => {
-                            setFormData({ ...formData, email: e.target.value });
-                            setError(null);
-                        }}
-                        onBlur={() => {
-                            if (formData.email && !validateEmail(formData.email)) {
-                                setError('Por favor, insira um e-mail válido.');
-                            }
-                        }}
-                        className={`form-control bg-dark text-white ${error && formData.email && !validateEmail(formData.email) ? 'is-invalid' : ''}`}
-                        required
-                        aria-label="E-mail"
-                        aria-describedby="email-help"
-                    />
-                    <small id="email-help" className="text-danger">
-                        {error && formData.email && !validateEmail(formData.email) && "Por favor, insira um e-mail válido."}
-                    </small>
+        {/* Mensagem de Sucesso */}
+        {success && (
+          <div
+            className="alert alert-success text-center mt-4 animate__animated animate__fadeIn"
+            role="alert"
+            aria-live="polite"
+          >
+            Mensagem enviada com sucesso!
+          </div>
+        )}
 
-                    {/* Campo de Mensagem */}
-                    <textarea
-                        placeholder="Digite sua mensagem (máximo 500 caracteres)"
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="form-control bg-dark text-white"
-                        rows="5"
-                        maxLength={500}
-                        required
-                        aria-label="Mensagem"
-                        aria-describedby="message-help"
-                    ></textarea>
-                    <small
-                        className={`text-muted ${formData.message.length > 450 ? 'text-warning fw-bold' : ''}`}
-                        id="message-help"
-                    >
-                        {`${formData.message.length}/500 caracteres`}
-                    </small>
+        {/* Mensagem de Erro */}
+        {error && (
+          <div
+            className="alert alert-danger text-center mt-4 animate__animated animate__shakeX"
+            role="alert"
+            aria-live="polite"
+          >
+            {error}
+          </div>
+        )}
 
-                    {/* Botão de Envio */}
-                    <button
-                        type="submit"
-                        className="btn btn-primary w-100 d-flex align-items-center justify-content-center hover-shadow"
-                        disabled={loading}
-                        aria-label="Enviar mensagem"
-                    >
-                        {loading ? (
-                            <FontAwesomeIcon icon={faSpinner} className="spinner-icon me-2" spin aria-hidden="true" />
-                        ) : (
-                            <>
-                                <FontAwesomeIcon icon={faPaperPlane} className="me-2" title="Enviar Mensagem" />
-                                Enviar Mensagem
-                            </>
-                        )}
-                    </button>
-                </form>
+        {/* Botões de Contato Direto */}
+        <div className="d-flex justify-content-center gap-4 mt-4 flex-wrap">
+          {/* E-mail */}
+          <a
+            href="mailto:dpcouto.dev@gmail.com"
+            className="btn btn-primary d-flex align-items-center gap-2 hover-shadow"
+            aria-label="Enviar e-mail para Diego Couto"
+          >
+            <FontAwesomeIcon icon={faEnvelope} title="E-mail" /> E-mail
+          </a>
 
-                {/* Mensagem de Sucesso */}
-                {success && (
-                    <div
-                        className="alert alert-success text-center mt-4 animate__animated animate__fadeIn"
-                        role="alert"
-                        aria-live="polite"
-                    >
-                        Mensagem enviada com sucesso!
-                    </div>
-                )}
-
-                {/* Mensagem de Erro */}
-                {error && (
-                    <div
-                        className="alert alert-danger text-center mt-4 animate__animated animate__shakeX"
-                        role="alert"
-                        aria-live="polite"
-                    >
-                        {error}
-                    </div>
-                )}
-
-                {/* Botões de Contato Direto */}
-                <div className="d-flex justify-content-center gap-4 mt-4 flex-wrap">
-                    {/* E-mail */}
-                    <a
-                        href="mailto:dpcouto.dev@gmail.com"
-                        className="btn btn-primary d-flex align-items-center gap-2 hover-shadow"
-                        aria-label="Enviar e-mail para Diego Couto"
-                    >
-                        <FontAwesomeIcon icon={faEnvelope} title="E-mail" /> E-mail
-                    </a>
-
-                    {/* WhatsApp */}
-                    <a
-                        href="https://wa.me/+5521974700582"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-success d-flex align-items-center gap-2 hover-shadow"
-                        aria-label="Enviar mensagem no WhatsApp para Diego Couto"
-                    >
-                        <FontAwesomeIcon icon={faWhatsapp} title="WhatsApp" /> WhatsApp
-                    </a>
-                </div>
-            </div>
-        </section>
-    );
+          {/* WhatsApp */}
+          <a
+            href="https://wa.me/+5521974700582"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-success d-flex align-items-center gap-2 hover-shadow"
+            aria-label="Enviar mensagem no WhatsApp para Diego Couto"
+          >
+            <FontAwesomeIcon icon={faWhatsapp} title="WhatsApp" /> WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default ContactSection;
