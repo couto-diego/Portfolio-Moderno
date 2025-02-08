@@ -75,3 +75,4 @@ app.post('/api/contact', [
         res.status(500).json({ error: 'Erro interno ao salvar mensagem.' });
     }
 });
+app.listen(process.env.PORT || 5000, () => console.log('Servidor rodando.'));
