@@ -64,15 +64,16 @@ app.post('/api/contact', [
         console.log('Mensagem salva:', newMessage);
 
         try {
-            await client.messages.create({
+                await client.messages.create({
                 from: process.env.TWILIO_WHATSAPP_NUMBER,
                 to: process.env.YOUR_WHATSAPP_NUMBER,
-                contentSid: process.env.TWILIO_TEMPLATE_SID,
-                contentVariables: JSON.stringify({ 
-                    '1': name, 
-                    '2': email, 
-                    '3': message 
-                })
+                messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID, // se estiver usando o Messaging Service SID
+                templateSid: process.env.TWILIO_TEMPLATE_SID,
+                templateData: {
+                '1': name, 
+                '2': email, 
+                '3': message
+                }
             });
             console.log('Notificação via WhatsApp enviada.');
         } catch (error) {
